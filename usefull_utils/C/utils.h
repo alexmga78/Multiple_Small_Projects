@@ -17,4 +17,13 @@ char* ridicare_la_putere_char(char numar[], int putere);
 int maximul_dintre_2_numere_char(char numar1[], char numar2[]);
 char* conversion_baseY_to_base10_char(char numar_in_bazaY[], int baseY);
 char* conversion_base10_to_baseY_char(char numar_in_baza10[], int bazaY);
+
+// Sets the file cursor to the Xth line/character/block of the file
+void setFileCursor_xLines_fromEnd(FILE* file, int number_of_lines);
+void setFileCursor_xCharacters_fromEnd(FILE* file, int number_of_characters);
+void setFileCursor_xBlocks512_fromEnd(FILE* file, int number_of_blocks512);
+
+// Transform roman -> arabic (number)
+int toArabic(char *number);
+
 #endif
