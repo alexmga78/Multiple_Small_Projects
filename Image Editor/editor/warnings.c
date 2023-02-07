@@ -25,3 +25,4 @@ int no_image_loaded(pbm pbm_img, pgm pgm_img, ppm ppm_img, uint focus) {
     return -1;
   }
   return 1;
+  
