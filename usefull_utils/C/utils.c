@@ -434,3 +434,98 @@ char* conversion_base10_to_baseY_char(char numar_in_baza10[], int bazaY) {
 
     return numar_in_bazaY;
 }
+
+void setFileCursor_xLines_fromEnd(FILE* file, int number_of_lines) {
+  fseek(file, 0, SEEK_END);
+  char line[400];
+  int setCursor_toStart = 0, bytes = 0, file_size = ftell(file);
+
+  for (int i = 0; i < number_of_lines; i++) {
+    fseek(file, bytes, SEEK_CUR);
+    bytes = -2;
+    while (line[0] != 10) {
+      fseek(file, bytes, SEEK_CUR);
+      fgets(line, 400, file);
+      bytes--;
+
+      if (abs(bytes) > file_size) {
+        setCursor_toStart = 1;
+        break;
+      }
+    }
+    fgets(line, 400, file);
+  }
+  fseek(file, bytes + 2, SEEK_CUR);
+
+  if (setCursor_toStart) fseek(file, 0, SEEK_SET);
+}
+
+void setFileCursor_xCharacters_fromEnd(FILE* file, int number_of_characters) {
+  char character;
+  int lineCounter = 0;
+
+  fseek(file, -number_of_characters, SEEK_END);
+  while (fscanf(file, "%c", &character) != EOF)
+    if (character == 10) lineCounter++;
+  fseek(file, -(number_of_characters + lineCounter), SEEK_END);
+}
+
+void setFileCursor_xBlocks512_fromEnd(FILE* file, int number_of_blocks512) {
+  char character;
+  int number_of_characters = 512, lineCounter = 0;
+
+  fseek(file, -(number_of_blocks512 * number_of_characters), SEEK_END);
+  while (fscanf(file, "%c", &character) != EOF)
+    if (character == 10) lineCounter++;
+  fseek(file, -(number_of_blocks512 * number_of_characters + lineCounter),
+        SEEK_END);
+}
+
+int toArabic(char *number) {
+  int year = 0;
+
+  for (unsigned int i = 0; i < strlen(number); i++) switch (number[i]) {
+      case 77: //M
+        year += 1000;
+        break;
+
+      case 67: //C
+        if (number[i + 1] != 77)
+          year += 100;
+        else {
+          year += 900;
+          i++;
+        }
+        break;
+
+      case 88: //X
+        if (number[i + 1] != 67)
+          year += 10;
+        else {
+          year += 90;
+          i++;
+        }
+        break;
+
+      case 86: //V
+        year += 5;
+        break;
+
+      case 73: //I
+        if (number[i + 1] != 86 && number[i + 1] != 88)
+          year += 1;
+        else if (number[i + 1] == 88) {
+          year += 9;
+          i++;
+        } else if (number[i + 1] == 86) {
+          year += 4;
+          i++;
+        }
+        break;
+
+      default:
+        break;
+    }
+
+  return year;
+}
